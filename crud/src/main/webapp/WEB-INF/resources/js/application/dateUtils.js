@@ -1,0 +1,78 @@
+DateUtils = {
+	dateToStringyyyMMdd : function(date) {
+		if (typeof date === "undefined") {
+			return "";
+		}
+
+		var year = date.getFullYear();
+		if (typeof year === "undefined" || isNaN(year)) {
+			console.error("blad - parametr nie jest datą");
+			return "";
+		}
+		var month = date.getMonth() + 1;
+		if (month < 10) {
+			month = "0" + month;
+		}
+
+		var day = date.getDate();
+		if (day < 10) {
+			day = "0" + day;
+		}
+
+		var str = year + '-' + month + '-' + day;
+
+		return str;
+	},
+	dateToStringyyyMM : function(date) {
+		if (typeof date === "undefined") {
+			return "";
+		}
+
+		var year = date.getFullYear();
+		if (typeof year === "undefined" || isNaN(year)) {
+			console.error("blad - parametr nie jest datą");
+			return "";
+		}
+		var month = date.getMonth() + 1;
+		if (month < 10) {
+			month = "0" + month;
+		}
+
+		var str = year + '-' + month;
+
+		return str;
+	}
+};
+
+function formatDateYYYYmmdd(date) {
+	if (typeof date === "undefined") {
+		return "";
+	}
+
+	var year = date.getFullYear();
+	if (typeof year === "undefined" || isNaN(year)) {
+		console.error("blad - parametr nie jest datą");
+		return "";
+	}
+	var month = date.getMonth() + 1;
+	if (month < 10) {
+		month = "0" + month;
+	}
+
+	var day = date.getDate();
+	if (day < 10) {
+		day = "0" + day;
+	}
+
+	var str = year + '-' + month + '-' + day;
+
+	return str;
+}
+
+function getDateYYYYmmdd(str) {
+	var date = new Date();
+
+	date = new Date(str);
+
+	return date;
+}

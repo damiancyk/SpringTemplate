@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE tiles-definitions PUBLIC  "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"  "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+	<definition name=".empty" template="/WEB-INF/pages/layout/empty.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+
+	<definition name=".main" template="/WEB-INF/pages/layout/main.jsp">
+		<put-attribute name="title" value="meest" type="string" />
+		<put-attribute name="header" value="/WEB-INF/pages/layout/header.jsp" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="submenu" value="" />
+		<put-attribute name="footer" value="/WEB-INF/pages/layout/footer.jsp" />
+	</definition>
+
+	<definition name="login" extends=".empty">
+		<put-attribute name="body" value="/WEB-INF/pages/login.jsp" />
+		<put-attribute name="menuactive" value="login" />
+	</definition>
+
+	<definition name="index" extends=".main">
+		<put-attribute name="body" value="/WEB-INF/pages/index.jsp" />
+		<put-attribute name="menuactive" value="index" />
+	</definition>
+
+	<definition name="itemView" extends=".main">
+		<put-attribute name="body" value="/WEB-INF/pages/itemView.jsp" />
+		<put-attribute name="menuactive" value="index" />
+	</definition>
+
+	<definition name="itemAdd" extends=".main">
+		<put-attribute name="body" value="/WEB-INF/pages/itemAdd.jsp" />
+		<put-attribute name="menuactive" value="index" />
+	</definition>
+
+	<definition name="itemInfo" extends=".main">
+		<put-attribute name="body" value="/WEB-INF/pages/itemInfo.jsp" />
+		<put-attribute name="menuactive" value="index" />
+	</definition>
+
+</tiles-definitions>

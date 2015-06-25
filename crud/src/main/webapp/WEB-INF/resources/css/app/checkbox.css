@@ -1,0 +1,6 @@
+input[type=checkbox].check {position: absolute; overflow: hidden; clip: rect(0, 0, 0, 0); height: 1px; width: 1px; margin: -1px; padding: 0; border: 0;}
+input[type=checkbox].check + label.check-label {padding-left: 20px; height: 20px; display: inline-block; line-height: 20px; background-repeat: no-repeat; background-position: 0 0; font-size: 20px; vertical-align: middle; cursor: pointer; width: inherit; margin: 0;}
+input[type=checkbox].check:checked + label.check-label {background-position: 0 -20px; width: inherit;}
+.check-label { background-image: url("../../img/checkbox.png"); }
+.checkboxTitle{margin-right: 25px;}
+.modal .check-label{z-index: 999999;}
