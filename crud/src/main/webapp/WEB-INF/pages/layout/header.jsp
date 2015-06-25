@@ -14,7 +14,7 @@
 			<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
 			<span class="icon-bar"></span> <span class="icon-bar"></span>
 		</button>
-		<a class="navbar-brand" href="index">Template</a>
+		<a class="navbar-brand" href="index">Index</a>
 	</div>
 
 	<ul class="nav navbar-right top-nav">
@@ -31,11 +31,8 @@
 	</ul>
 	<div class="collapse navbar-collapse navbar-ex1-collapse">
 		<ul class="nav navbar-nav side-nav">
-			<li class="${menuactive=='index'?'active':''}"><a href="index"><i
-					class="fa fa-fw fa-home"></i> Index</a>
-			</li>
 			<li class="${menuactive=='item'?'active':''}"><a
-				href="itemView"><i class="fa fa-fw fa-dashboard"></i> <fmt:message
+				href="itemView"><i class="fa fa-fw fa-wrench"></i> <fmt:message
 						key="menu.items"></fmt:message> </a>
 			</li>
 		</ul>

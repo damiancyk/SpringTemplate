@@ -13,12 +13,17 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="box-title">
-			<a href="itemView"><fmt:message key="breadcrumb.view" /> </a> <span
-				class="active"> / <c:if test="${item.idItem!=null}">
-					<fmt:message key="breadcrumb.edit" />
-				</c:if> <c:if test="${item.idItem==null}">
-					<fmt:message key="breadcrumb.add" />
-				</c:if> </span>
+			<ol class="breadcrumb">
+				<li><i class="fa fa-wrench"></i> <a href="itemView"> <fmt:message
+							key="menu.items"></fmt:message>
+				</a></li>
+				<li class="active"><c:if test="${item.idItem!=null}">
+						<fmt:message key="breadcrumb.edit" />
+					</c:if> <c:if test="${item.idItem==null}">
+						<fmt:message key="breadcrumb.add" />
+					</c:if></li>
+			</ol>
+
 		</div>
 	</div>
 

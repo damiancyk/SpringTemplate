@@ -21,12 +21,6 @@
 
 			</c:if>
 
-			<c:if test="${param.logoutSuccess!=null }">
-				<div class="alert alert-success"
-					style="margin-left: 10px; margin-right: 10px">Poprawnie
-					wylogowano!</div>
-			</c:if>
-
 			<c:if test="${logoutSuccess!=null }">
 				<div class="alert alert-success"
 					style="margin-left: 10px; margin-right: 10px">Poprawnie

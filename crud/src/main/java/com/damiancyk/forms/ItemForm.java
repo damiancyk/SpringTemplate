@@ -2,6 +2,7 @@ package com.damiancyk.forms;
 
 import org.springframework.validation.BindingResult;
 
+import com.damiancyk.beans.ItemBean;
 import com.damiancyk.enums.StatusEnum;
 import com.damiancyk.utils.ValidationUtils;
 
@@ -14,15 +15,14 @@ public class ItemForm {
 	public ItemForm() {
 	}
 
-	public ItemForm(Long idItem, String name) {
-		super();
-		this.idItem = idItem;
-		this.name = name;
+	public ItemForm(ItemBean bean) {
+		this.idItem = bean.getIdItem();
+		this.name = bean.getName();
+		this.status = bean.getStatus();
 	}
 
 	public void validate(BindingResult result) {
 		ValidationUtils.notEmpty("name", name, result);
-
 	}
 
 	public Long getIdItem() {

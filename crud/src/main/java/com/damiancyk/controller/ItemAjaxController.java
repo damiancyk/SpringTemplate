@@ -32,10 +32,10 @@ public class ItemAjaxController {
 		try {
 			Long idCompany = operator.getIdCompany();
 
+			Long count = itemPersistence.countViewByIds(params, idCompany);
 			ArrayList<ItemBean> list = itemPersistence.findViewByIds(params,
 					idCompany);
 
-			Long count = 10l;
 			String json = DecoratorUtils.getJsonAngular(list,
 					ItemDecorator.class, count);
 

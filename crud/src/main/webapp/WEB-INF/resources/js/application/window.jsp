@@ -511,4 +511,12 @@ function isMultipleSelect2(select2){
 	}
 	return false
 }
+
+function isIframe(){
+	if (window != window.top) {
+		return true;
+	}else{
+		return false;
+	}
+}
 </script>

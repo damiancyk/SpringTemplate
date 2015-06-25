@@ -86,14 +86,6 @@ function getStringBetweenChars(str, char1, char2){
 	return strBetween;
 }
 
-function isIframe(){
-	if (window != window.top) {
-		return true;
-	}else{
-		return false;
-	}
-}
-
 function stopPropagation(ev) {
 	ev = ev || event;
 	ev.stopPropagation ? ev.stopPropagation() : ev.cancelBubble = true;

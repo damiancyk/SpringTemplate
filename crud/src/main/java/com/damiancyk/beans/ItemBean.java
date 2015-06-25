@@ -2,6 +2,7 @@ package com.damiancyk.beans;
 
 import java.util.Date;
 
+import com.damiancyk.entity.Item;
 import com.damiancyk.enums.StatusEnum;
 
 public class ItemBean {
@@ -12,6 +13,13 @@ public class ItemBean {
 	private Date createDate;
 
 	public ItemBean() {
+	}
+
+	public ItemBean(Item entity) {
+		this.idItem = entity.getIdItem();
+		this.name = entity.getName();
+		this.status = entity.getStatus();
+		this.createDate = entity.getCreateDate();
 	}
 
 	public ItemBean(Long idItem, String name, Date createDate) {

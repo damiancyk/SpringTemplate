@@ -3,4 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ page isELIgnored="false"%>
 
-Test template
+<style>
+span.footer {
+	color: #ccc;
+}
+</style>
+<span class="footer">Copyright damiancyk</span>

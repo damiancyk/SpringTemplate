@@ -23,6 +23,17 @@ public class ItemPersistence {
 	@PersistenceContext
 	EntityManager em;
 
+	public ItemBean findById(Long idItem) throws Exception {
+		try {
+			Item entity = em.find(Item.class, idItem);
+
+			return new ItemBean(entity);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("findById.error");
+		}
+	}
+
 	private HashMap<String, String> getAliases() {
 		HashMap<String, String> aliases = new HashMap<String, String>();
 
@@ -43,12 +54,35 @@ public class ItemPersistence {
 
 			params.setHql(hql, aliases);
 			Query query = em.createQuery(hql.toString());
-			params.setHqlCount(hql, aliases);
+			params.setPagination(query);
 
 			query.setParameter("status", StatusEnum.ACTIVE);
 
 			ArrayList<ItemBean> resultList = (ArrayList<ItemBean>) query
 					.getResultList();
+
+			return resultList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("findViewByIds.error");
+		}
+	}
+
+	public Long countViewByIds(TableAjaxParamBean params, Long idCompany)
+			throws Exception {
+		try {
+			StringBuilder hql = new StringBuilder();
+			hql.append("select count(*)");
+			hql.append(" from Item i where i.status=:status");
+
+			HashMap<String, String> aliases = getAliases();
+
+			params.setHqlCount(hql, aliases);
+			Query query = em.createQuery(hql.toString());
+
+			query.setParameter("status", StatusEnum.ACTIVE);
+
+			Long resultList = (Long) query.getSingleResult();
 
 			return resultList;
 		} catch (Exception e) {
@@ -67,6 +101,20 @@ public class ItemPersistence {
 			em.persist(entity);
 
 			return entity.getIdItem();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("save.error");
+		}
+	}
+
+	@Transactional
+	public void edit(ItemForm form, Long idItem) throws Exception {
+		try {
+			Item entity = em.find(Item.class, idItem);
+			entity = copyValues(form, entity);
+
+			em.merge(entity);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception("save.error");

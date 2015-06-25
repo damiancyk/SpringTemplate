@@ -24,6 +24,9 @@
 <link rel="shortcut icon" href="resources/img/favicon.ico" />
 
 <script src="resources/js/jquery/jquery-1.11.3.min.js"></script>
+<script src="resources/js/jquery/jquery-migrate-1.2.1.min.js"></script>
+<script src="resources/js/bootstrap/bootstrap.min.js"></script>
+<script src="resources/js/bootstrap/bootstrap-notify.min.js"></script>
 <script src="resources/js/angular/angular.min.js"></script>
 <script src="resources/js/angular/angular-resource.min.js"></script>
 <script src="resources/js/angular/ng-table/ng-table-export.src.js"></script>
@@ -34,7 +37,9 @@
 <script src="resources/js/angular/angular-cookies.min.js"></script>
 <script src="resources/js/angular/ng-table/ng-table-export.src.js"></script>
 <script src="resources/js/angular/ng-table/ng-table.min.js"></script>
-
+<jsp:include page="../../resources/js/application/alert.jsp" />
+<jsp:include page="../../resources/js/application/tableUtils.jsp" />
+<jsp:include page="../../resources/js/application/window.jsp" />
 
 <link href="resources/css/bootstrap/bootstrap.min.css" rel="stylesheet">
 <link href="resources/css/font-awesome.min.css" rel="stylesheet"

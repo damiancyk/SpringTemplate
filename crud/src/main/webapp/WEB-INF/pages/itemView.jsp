@@ -8,7 +8,7 @@
 	<div class="box col-md-12">
 		<div class="panel-heading">
 			<ol class="breadcrumb">
-				<li><i class="fa fa-stethoscope"></i> <a href="itemView"> <fmt:message
+				<li><i class="fa fa-wrench"></i> <a href="itemView"> <fmt:message
 							key="menu.items"></fmt:message> </a>
 				</li>
 				<li class="active"><fmt:message key="breadcrumb.view" /></li>
