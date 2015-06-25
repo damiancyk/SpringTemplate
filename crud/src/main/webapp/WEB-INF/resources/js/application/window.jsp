@@ -226,7 +226,7 @@ function setDialogFooterContent(footer) {
 	setDialogFooterBreadcrumb(footer);
 
 	if (windowType == 'info') {
-		var btnOk = $('<button class="btn btnOk dx-button dx-button-normal dx-button-success">Ok</button>');
+		var btnOk = $('<button class="btn btnOk btn-success">Ok</button>');
 		footer.append(btnOk);
 		btnOk.click(function() {
 			closeDialog();

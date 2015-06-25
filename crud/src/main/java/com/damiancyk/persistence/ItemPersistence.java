@@ -23,6 +23,50 @@ public class ItemPersistence {
 	@PersistenceContext
 	EntityManager em;
 
+	@Transactional
+	public Long save(ItemForm form) throws Exception {
+		try {
+			Item entity = copyValues(form, null);
+
+			entity.setStatus(StatusEnum.ACTIVE);
+			entity.setCreateDate(new Date());
+			em.persist(entity);
+
+			return entity.getIdItem();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("save.error");
+		}
+	}
+
+	@Transactional
+	public void edit(ItemForm form, Long idItem) throws Exception {
+		try {
+			Item entity = em.find(Item.class, idItem);
+			entity = copyValues(form, entity);
+
+			em.merge(entity);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("edit.error");
+		}
+	}
+
+	@Transactional
+	public void delete(Long idItem) throws Exception {
+		try {
+			Item entity = em.find(Item.class, idItem);
+			entity.setStatus(StatusEnum.DELETED);
+
+			em.merge(entity);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("delete.error");
+		}
+	}
+
 	public ItemBean findById(Long idItem) throws Exception {
 		try {
 			Item entity = em.find(Item.class, idItem);
@@ -88,36 +132,6 @@ public class ItemPersistence {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception("findViewByIds.error");
-		}
-	}
-
-	@Transactional
-	public Long save(ItemForm form) throws Exception {
-		try {
-			Item entity = copyValues(form, null);
-
-			entity.setStatus(StatusEnum.ACTIVE);
-			entity.setCreateDate(new Date());
-			em.persist(entity);
-
-			return entity.getIdItem();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new Exception("save.error");
-		}
-	}
-
-	@Transactional
-	public void edit(ItemForm form, Long idItem) throws Exception {
-		try {
-			Item entity = em.find(Item.class, idItem);
-			entity = copyValues(form, entity);
-
-			em.merge(entity);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new Exception("save.error");
 		}
 	}
 
