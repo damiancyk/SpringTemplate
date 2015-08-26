@@ -358,7 +358,7 @@
 
 function reloadNgTable() {
 	var tableControllers = $('div[ng-controller=TableCtrl]');
-var x;
+
 	tableControllers.each(function() {
 		var divController = $(this);
 		var tableController = angular.element(divController);
