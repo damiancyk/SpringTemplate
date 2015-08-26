@@ -6,16 +6,10 @@
 					[
 							'$httpProvider',
 							function($httpProvider) {
-								// Initialize get if not there
 								if (!$httpProvider.defaults.headers.get) {
 									$httpProvider.defaults.headers.get = {};
 								}
-
-								// Enables Request.IsAjaxRequest() in ASP.NET
-								// MVC
 								$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
-
-								// Disable IE ajax request caching
 								$httpProvider.defaults.headers.get['If-Modified-Since'] = '0';
 							} ]);
 
@@ -84,10 +78,8 @@
 
 		setRefreshData(table, $interval, $scope);
 
-		// $timeout(test(), 1000);
-
-		var datepickers = table.find('input.datepicker');
-		initDatepicker(datepickers);
+		//var datepickers = table.find('input.datepicker');
+		//initDatepicker(datepickers);
 	});
 
 	app.directive('tableRow', function() {
@@ -124,6 +116,16 @@
 		}
 	});
 
+	app.directive('datetimepicker', function() {
+		return {
+			link : function(scope, elm) {
+				var elm = $(elm);
+				var inputDatepicker = elm.find('input.datetimepicker');
+				initDatetimepicker(elm);
+			}
+		}
+	});
+	
 	app.directive('selectpicker', function() {
 		return {
 			link : function(scope, elm) {
@@ -234,14 +236,15 @@
 		orderedData = params.filter() ? $filter('filter')(orderedData,
 				params.filter()) : data;
 
+		params.total(orderedData.length);
+
 		orderedData = orderedData.slice((params.page() - 1) * params.count(),
 				params.page() * params.count());
 
+		
 		setTotals($scope, table, data);
 		setAverages($scope, table, data);
 		setTableAfterNewData(table, orderedData.length);
-
-		params.total(data.length);
 		$defer.resolve(orderedData);
 	}
 
@@ -355,7 +358,7 @@
 
 function reloadNgTable() {
 	var tableControllers = $('div[ng-controller=TableCtrl]');
-
+var x;
 	tableControllers.each(function() {
 		var divController = $(this);
 		var tableController = angular.element(divController);
