@@ -30,8 +30,6 @@ public class Operator {
 	String iconPublicPath;
 	String iconRealPath;
 
-	boolean isLoyaltyProgramDisabled;
-
 	public Operator() {
 	}
 
@@ -145,14 +143,6 @@ public class Operator {
 
 	public void setIconRealPath(String iconRealPath) {
 		this.iconRealPath = iconRealPath;
-	}
-
-	public boolean getIsLoyaltyProgramDisabled() {
-		return isLoyaltyProgramDisabled;
-	}
-
-	public void setIsLoyaltyProgramDisabled(boolean isLoyaltyProgramDisabled) {
-		this.isLoyaltyProgramDisabled = isLoyaltyProgramDisabled;
 	}
 
 }
