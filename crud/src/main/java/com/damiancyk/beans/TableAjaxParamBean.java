@@ -10,15 +10,20 @@ import javax.persistence.Query;
 
 public class TableAjaxParamBean {
 
-	private String phrase;
+	public static final String NVARCHAR = "{nvarchar}";
 	private Integer count;
 	private Integer page;
-	// np filter[invoiceDate]=2015-05-15
-	private HashMap<String, String> filter;
+	/*
+	 * np filter[invoiceDate]=2015-05-15
+	 */
+	private HashMap<String, Object> filter;
 	private HashMap<String, String> sorting;
-	// operacja filtrowania
-	// np op[invoiceDate]=biggerThan
-	private HashMap<String, String> op;
+
+	// TODO operacja filtrowania
+	/*
+	 * np op[invoiceDate]=biggerThan
+	 */
+	// private HashMap<String, String> op;
 
 	public void setPagination(Query query) {
 		if (getCount() != null && getCount() > 0) {
@@ -29,17 +34,68 @@ public class TableAjaxParamBean {
 		}
 	}
 
-	public void setHql(StringBuilder hql, HashMap<String, String> aliases) {
-		setHqlFilter(hql, aliases);
+	public void setQuery(StringBuilder hql, HashMap<String, String> aliases, HashMap<String, Object> queryParams) {
+		setHqlFilter(hql, aliases, queryParams);
 		setHqlSort(hql, aliases);
 
-		System.out.println("HQL " + hql);
+		System.out.println("QUERY:: " + hql);
 	}
 
-	public void setHqlCount(StringBuilder hql, HashMap<String, String> aliases) {
-		setHqlFilter(hql, aliases);
+	public void setQueryCount(StringBuilder hql, HashMap<String, String> aliases, HashMap<String, Object> queryParams) {
+		setHqlFilter(hql, aliases, queryParams);
 
-		System.out.println("HQL COUNT " + hql);
+		System.out.println("QUERY COUNT:: " + hql);
+	}
+
+	public Query getQueryHql(StringBuilder hql, HashMap<String, String> aliases, EntityManager em) {
+		HashMap<String, Object> queryParams = new HashMap<String, Object>();
+
+		setQuery(hql, aliases, queryParams);
+		Query query = em.createQuery(hql.toString());
+		setPagination(query);
+		setQueryParams(queryParams, query);
+
+		return query;
+	}
+
+	public Query getQuerySql(StringBuilder sql, HashMap<String, String> aliases, EntityManager em) {
+		HashMap<String, Object> queryParams = new HashMap<String, Object>();
+		setQuery(sql, aliases, queryParams);
+		Query query = em.createNativeQuery(sql.toString());
+		setPagination(query);
+		setQueryParams(queryParams, query);
+
+		return query;
+	}
+
+	private void setQueryParams(HashMap<String, Object> queryParams, Query query) {
+		if (queryParams.size() > 0) {
+			for (Entry<String, Object> queryParam : queryParams.entrySet()) {
+				String paramName = queryParam.getKey();
+				Object paramValue = queryParam.getValue();
+
+				query.setParameter(paramName, paramValue);
+			}
+
+		}
+	}
+
+	public Query getQueryHqlCount(StringBuilder hql, HashMap<String, String> aliases, EntityManager em) {
+		HashMap<String, Object> queryParams = new HashMap<String, Object>();
+		setQueryCount(hql, aliases, queryParams);
+		Query query = em.createQuery(hql.toString());
+		setQueryParams(queryParams, query);
+
+		return query;
+	}
+
+	public Query getQuerySqlCount(StringBuilder sql, HashMap<String, String> aliases, EntityManager em) {
+		HashMap<String, Object> queryParams = new HashMap<String, Object>();
+		setQueryCount(sql, aliases, queryParams);
+		Query query = em.createNativeQuery(sql.toString());
+		setQueryParams(queryParams, query);
+
+		return query;
 	}
 
 	private void setHqlSort(StringBuilder hql, HashMap<String, String> aliases) {
@@ -61,6 +117,11 @@ public class TableAjaxParamBean {
 					}
 
 					hqlSort.append(" ");
+
+					if (alias.contains(NVARCHAR)) {
+						alias = replaceVarCharMark(alias);
+					}
+
 					hqlSort.append(alias);
 					if (desc) {
 						hqlSort.append(" desc");
@@ -74,47 +135,75 @@ public class TableAjaxParamBean {
 		hql.append(hqlSort);
 	}
 
-	private HashSet<String> setHqlFilter(StringBuilder hql,
-			HashMap<String, String> aliases) {
+	private HashSet<String> setHqlFilter(StringBuilder hql, HashMap<String, String> aliases,
+			HashMap<String, Object> queryParams) {
 		StringBuilder hqlFilter = new StringBuilder();
 
 		if (filter != null) {
-			for (Entry<String, String> f : filter.entrySet()) {
+			boolean firstFilter = true;
+			boolean containsWhere = hql.toString().contains(" where");
+
+			for (Entry<String, Object> f : filter.entrySet()) {
 				String filterField = f.getKey();
-				String filterValue = f.getValue();
+				Object filterValue = f.getValue();
 				String filterOperation = "contains";
 
 				if (aliases.get(filterField) != null) {
-					hqlFilter.append(" and");
-					addFilterOperation(filterField, filterOperation,
-							filterValue, hqlFilter, aliases);
+					if (firstFilter && !containsWhere) {
+						hqlFilter.append(" where ");
+					} else {
+						hqlFilter.append(" and ");
+					}
+					addFilterOperations(filterField, filterOperation, filterValue, hqlFilter, aliases, queryParams);
+					firstFilter = false;
 				}
+
 			}
 		}
 
-		// if (hqlFilter.length() > 0) {
-		// hqlFilter.insert(0, " and");
-		// }
 		hql.append(hqlFilter);
 
 		return null;
 	}
 
-	private Entry<String/* pole */, String/* operacja */> addFilterOperation(
-			String filterField, String filterOperation, String filterValue,
-			StringBuilder hqlFilter, HashMap<String, String> aliases) {
+	// pole <-> aliasy po przecinkach
+	private void addFilterOperations(String filterField, String filterOperation, Object filterValue,
+			StringBuilder hqlFilter, HashMap<String, String> aliases, HashMap<String, Object> queryParams) {
+
+		String fields = aliases.get(filterField);
+		String[] fieldsTab = fields.split(",");
+
+		int length = fieldsTab.length;
+		if (length == 1) {
+			String field = fieldsTab[0];
+			addFilterOperation(filterField, filterOperation, filterValue, hqlFilter, field, queryParams);
+		} else if (length > 1) {
+			hqlFilter.append("(");
+			for (int i = 0; i < length; i++) {
+				if (i > 0) {
+					hqlFilter.append(" or ");
+				}
+				String field = fieldsTab[i];
+				addFilterOperation(filterField, filterOperation, filterValue, hqlFilter, field, queryParams);
+			}
+			hqlFilter.append(")");
+		}
+
+	}
+
+	// pole <-> alias
+	private void addFilterOperation(String filterField, String filterOperation, Object filterValue,
+			StringBuilder hqlFilter, String field, HashMap<String, Object> queryParams) {
 
 		StringBuilder hqlOperation = new StringBuilder();
-
-		String field = aliases.get(filterField);
 
 		String operationBegin = null;
 
 		String operationEnd = null;
 
 		if ("contains".equals(filterOperation)) {
-			operationBegin = "LIKE '%";
-			operationEnd = "%'";
+			operationBegin = "LIKE ";
+			operationEnd = "";
 		} else if ("notcontains".equals(filterOperation)) {
 			operationBegin = "NOT LIKE '%";
 			operationEnd = "%'";
@@ -147,79 +236,123 @@ public class TableAjaxParamBean {
 			operationEnd = "";
 		}
 
-		hqlOperation.append(" " + field + " " + operationBegin + filterValue
-				+ operationEnd);
+		// " CONVERT(VARCHAR, "
 
-		hqlFilter.append(hqlOperation);
+		if (field.contains(NVARCHAR)) {
+			field = replaceVarCharMark(field);
 
-		Map.Entry<String, String> entry = new AbstractMap.SimpleEntry<String, String>(
-				filterField, filterOperation);
-
-		return entry;
-	}
-
-	private HashMap<String, String> getAliasesFromQuery(
-			HashMap<String, String> queryParams, HashMap<String, String> aliases) {
-		HashMap<String, String> aliasesInQuery = new HashMap<String, String>();
-		if (queryParams != null && aliases != null) {
-			for (Entry<String, String> queryParam : queryParams.entrySet()) {
-				String aliasValue = aliases.get(queryParam.getKey());
-				if (aliasValue != null) {
-					aliasesInQuery.put(queryParam.getKey(), aliasValue);
-				}
-			}
-
+			String paramName = field.replaceAll("\\.", "_");
+			StringBuilder filterValueQueryParams = new StringBuilder();
+			filterValueQueryParams.append("%");
+			filterValueQueryParams.append(filterValue);
+			filterValueQueryParams.append("%");
+			queryParams.put(paramName, filterValueQueryParams.toString());
+			hqlOperation.append(field + " " + operationBegin + ":" + paramName + operationEnd);
+			// hqlOperation.append(field + " like CONVERT(NVARCHAR(4000),'%" +
+			// filterValue + "%')");
+		} else {
+			hqlOperation.append(field + " " + operationBegin + "'%" + filterValue + "%'" + operationEnd);
 		}
 
-		return aliasesInQuery;
+		hqlFilter.append(hqlOperation);
 	}
 
-	public String getPhrase() {
-		return phrase;
+	private String replaceVarCharMark(String str) {
+		String replaced = str.replaceAll("\\{nvarchar\\}", "");
+		return replaced;
 	}
 
-	public void setPhrase(String phrase) {
-		this.phrase = phrase;
+	public static void main(String[] args) {
+		String str = "{nvarchar}";
+		System.out.println(str.contains("{nvarchar}"));
 	}
 
-	public Integer getCount() {
+	// TODO enumy
+	@Deprecated
+	private Object getFilterValueByType(Object o) {
+		String paramStr = "" + o;
+
+		try {
+			Date obj = DateUtils.stringToDate(paramStr);
+			if (obj != null) {
+				return obj;
+			}
+		} catch (Exception e) {
+		}
+
+		try {
+			Long obj = new Long(paramStr);
+			if (obj != null) {
+				return obj;
+			}
+		} catch (Exception e) {
+		}
+
+		try {
+			Double obj = Utils.getDouble(paramStr);
+			if (obj != null) {
+				return obj;
+			}
+		} catch (Exception e) {
+		}
+
+		try {
+			PaymentTypeEnum obj = PaymentTypeEnum.getEnum(paramStr);
+			if (obj != null) {
+				return obj;
+			}
+		} catch (Exception e) {
+		}
+
+		try {
+			InvoiceTypeEnum obj = InvoiceTypeEnum.getEnum(paramStr);
+			if (obj != null) {
+				return obj;
+			}
+		} catch (Exception e) {
+		}
+
+		try {
+			ParcelTrackingHistoryStatusEnum obj = ParcelTrackingHistoryStatusEnum.getEnum(paramStr);
+			if (obj != null) {
+				return obj;
+			}
+		} catch (Exception e) {
+		}
+
+		return "%" + o + "%";
+	}
+
+	private Integer getCount() {
 		return count;
+	}
+
+	private Integer getPage() {
+		return page;
 	}
 
 	public void setCount(Integer count) {
 		this.count = count;
 	}
 
-	public Integer getPage() {
-		return page;
-	}
-
 	public void setPage(Integer page) {
 		this.page = page;
 	}
 
-	public HashMap<String, String> getFilter() {
-		return filter;
-	}
-
-	public void setFilter(HashMap<String, String> filter) {
+	public void setFilter(HashMap<String, Object> filter) {
 		this.filter = filter;
-	}
-
-	public HashMap<String, String> getSorting() {
-		return sorting;
 	}
 
 	public void setSorting(HashMap<String, String> sorting) {
 		this.sorting = sorting;
 	}
 
-	public HashMap<String, String> getOp() {
-		return op;
+	public HashMap<String, Object> getFilter() {
+		return filter;
 	}
 
-	public void setOp(HashMap<String, String> op) {
-		this.op = op;
+	public HashMap<String, String> getSorting() {
+		return sorting;
 	}
 
 }
