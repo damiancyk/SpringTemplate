@@ -15,26 +15,27 @@ import com.damiancyk.interfaces.EnumLangInterface;
 import com.damiancyk.utils.DateUtils;
 import com.damiancyk.utils.SpringContextUtils;
 
-public class DecoratorTable {
+public abstract class DecoratorTable {
 
 	public static String getMessageFromKey(String key) {
+		StringBuilder lang = new StringBuilder();
 		if (key == null || key.length() == 0) {
-			return "";
+			return lang.toString();
 		}
 
-		ApplicationContext applicationContext = SpringContextUtils
-				.getApplicationContext();
+		ApplicationContext applicationContext = SpringContextUtils.getApplicationContext();
 		Locale locale = LocaleContextHolder.getLocale();
-		String lang = "";
 
 		try {
-			lang = applicationContext.getMessage(key, null, locale);
+			lang.append(applicationContext.getMessage(key, null, locale));
 		} catch (Exception e) {
 			e.printStackTrace();
-			lang = "???" + key + "???";
+			lang.append("???");
+			lang.append(key);
+			lang.append("???");
 		}
 
-		return lang;
+		return lang.toString();
 	}
 
 	public static String getMessageFromKey(EnumLangInterface enumLang) {
@@ -47,8 +48,7 @@ public class DecoratorTable {
 			return "";
 		}
 
-		ApplicationContext applicationContext = SpringContextUtils
-				.getApplicationContext();
+		ApplicationContext applicationContext = SpringContextUtils.getApplicationContext();
 		if (applicationContext == null) {
 			return "";
 		}
@@ -83,8 +83,7 @@ public class DecoratorTable {
 			path = "img/empty_logo.png";
 		}
 
-		String str = "<img src='" + path
-				+ "' style='width:40px;height:40px;'></img>";
+		String str = "<img src='" + path + "' style='width:40px;height:40px;'></img>";
 
 		return str;
 	}
@@ -92,6 +91,8 @@ public class DecoratorTable {
 	public static String getLink(String url, String text) {
 		if (url == null || text == null) {
 			return "";
+		} else if (url.contains("-null")) {
+			return text;
 		}
 
 		String str = "<a href='" + url + "'>" + text + "</a>";
@@ -109,15 +110,14 @@ public class DecoratorTable {
 		return str;
 	}
 
-	public static String getLinkDownload(String filePublicPath, String text) {
-		if (filePublicPath == null || text == null) {
+	public static String getLinkDownload(String fileRealPath, String text) {
+		if (fileRealPath == null || fileRealPath.length() == 0 || text == null || text.length() == 0) {
 			return "";
 		}
 
-		String str = "<a href='downloadSimpleFile/?fileRealPath="
-				+ filePublicPath
-				+ "&id=${document.idDocument}&openType=down&fileType=document' target='_new' class='pure-button pure-button-xsmall' >"
-				+ text + "</a>";
+		String str = "<a href='downloadSimpleFile/?fileRealPath=" + fileRealPath
+				+ "&openType=down&fileType=document' target='_new' class='pure-button pure-button-xsmall' >" + text
+				+ "</a>";
 
 		return str;
 	}
@@ -125,10 +125,11 @@ public class DecoratorTable {
 	public static String getLinkPopup(String url, String text) {
 		if (url == null || text == null) {
 			return "";
+		} else if (url.contains("-null")) {
+			return text;
 		}
 
-		String str = "<a href='" + url
-				+ "' onclick='invokeDialog(undefined, event)'>" + text + "</a>";
+		String str = "<a href='" + url + "' onclick='invokeDialog(undefined, event)'>" + text + "</a>";
 
 		return str;
 	}
@@ -147,6 +148,10 @@ public class DecoratorTable {
 
 	public static String getDateDecorated(Date date) {
 		return DateUtils.dateToStringyyyMMdd(date);
+	}
+
+	public static String getDateDecoratedWithTime(Date date) {
+		return DateUtils.dateToStringyyyMMddHHmm(date);
 	}
 
 	public static String getBoolean(Boolean flag) {
@@ -179,8 +184,7 @@ public class DecoratorTable {
 			classTabeGen.addConstructor(constructor);
 
 			Class<? extends CtClass> class1 = classTabeGen.getClass();
-			CtConstructor[] constructors = classTabeGen
-					.getDeclaredConstructors();
+			CtConstructor[] constructors = classTabeGen.getDeclaredConstructors();
 			System.out.println(constructors[0]);
 			Object o = new Object();
 
