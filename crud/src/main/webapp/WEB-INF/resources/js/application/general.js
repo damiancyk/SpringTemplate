@@ -71,7 +71,15 @@ function showJson(json) {
 }
 
 function log(txt) {
-	console.log(txt);
+	 window.console.log(txt);
+}
+
+function logTime(txt) {
+
+	var d = new Date();
+	var time=DateUtils.dateToStringHHmm(d);
+	if (window.console) 
+		 window.console.log(time+' '+txt);
 }
 
 function objectToString(obj) {
@@ -84,6 +92,14 @@ function getStringBetweenChars(str, char1, char2){
 	var strBetween = str.substring(start_pos,end_pos)
 	
 	return strBetween;
+}
+
+function isIframe(){
+	if (window != window.top) {
+		return true;
+	}else{
+		return false;
+	}
 }
 
 function stopPropagation(ev) {

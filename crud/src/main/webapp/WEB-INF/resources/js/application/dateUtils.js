@@ -6,7 +6,7 @@ DateUtils = {
 
 		var year = date.getFullYear();
 		if (typeof year === "undefined" || isNaN(year)) {
-			console.error("blad - parametr nie jest datą");
+			console.error("Conversion error - param is not a date");
 			return "";
 		}
 		var month = date.getMonth() + 1;
@@ -30,7 +30,7 @@ DateUtils = {
 
 		var year = date.getFullYear();
 		if (typeof year === "undefined" || isNaN(year)) {
-			console.error("blad - parametr nie jest datą");
+			console.error("Conversion error - param is not a date");
 			return "";
 		}
 		var month = date.getMonth() + 1;
@@ -41,7 +41,46 @@ DateUtils = {
 		var str = year + '-' + month;
 
 		return str;
+	},
+	dateToStringHHmm : function(date) {
+		if (typeof date === "undefined") {
+			return "";
+		}
+
+		var str = DateUtils.doubleNumber(date.getHours()) + ":"
+				+ DateUtils.doubleNumber(date.getMinutes()) + ":"
+				+ DateUtils.doubleNumber(date.getSeconds())
+
+		return str;
+	},
+	dateToStringHHmm : function(date) {
+		if (typeof date === "undefined") {
+			return "";
+		}
+
+		var str = DateUtils.doubleNumber(date.getHours()) + ":"
+				+ DateUtils.doubleNumber(date.getMinutes()) + ":"
+				+ DateUtils.doubleNumber(date.getSeconds()) + "."
+				+ DateUtils.tripleNumber(date.getMilliseconds())
+
+		return str;
+	},
+	doubleNumber : function(number) {
+		if (number < 10) {
+			number = "0" + number;
+		}
+		return number;
+	},
+	tripleNumber : function(number) {
+		if (number < 10) {
+			number = "00" + number;
+		} else if (number < 100) {
+			number = "0" + number;
+		}
+
+		return number;
 	}
+
 };
 
 function formatDateYYYYmmdd(date) {
@@ -51,7 +90,7 @@ function formatDateYYYYmmdd(date) {
 
 	var year = date.getFullYear();
 	if (typeof year === "undefined" || isNaN(year)) {
-		console.error("blad - parametr nie jest datą");
+		console.error("Conversion error - param is not a date");
 		return "";
 	}
 	var month = date.getMonth() + 1;
