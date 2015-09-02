@@ -1,0 +1,1 @@
+var tableUtilsLocale={selectOnlyOneRow:"Выберите только одну строку",noSelectedColumn:"Нет элемент не выбран"};

@@ -1,0 +1,1 @@
+var alertLocale={btnYes:"так",btnNo:"не",confirmTitle:"Подтверждение акций",alertConfirmation:"Вы уверены?"};

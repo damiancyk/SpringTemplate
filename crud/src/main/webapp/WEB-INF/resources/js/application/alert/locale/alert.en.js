@@ -1,0 +1,1 @@
+var alertLocale={btnYes:"Yes",btnNo:"No",confirmTitle:"Confirmation",alertConfirmation:"Are you sure?"};

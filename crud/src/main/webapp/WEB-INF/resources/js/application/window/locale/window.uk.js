@@ -1,0 +1,1 @@
+var windowLocale={btnOk:"Добре",btnSave:"зберегти",btnCancel:"Скасувати"};

@@ -1,0 +1,1 @@
+var windowLocale={btnOk:"Ok",btnSave:"Zapisz",btnCancel:"Anuluj"};
