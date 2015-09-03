@@ -6,7 +6,7 @@ import com.damiancyk.entity.Item;
 import com.damiancyk.enums.StatusEnum;
 
 public class ItemBean {
-
+/////
 	private Long idItem;
 	private String name;
 	private StatusEnum status;
